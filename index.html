@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Kültürpark Orman – Menü</title>
+<noscript><meta http-equiv="refresh" content="0;url=https://aybuketuna.github.io/qr-menu/"></noscript>
+<style>
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#12362a;color:#f3ead0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;text-align:center}
+  a{color:#c9a45c;font-weight:600}
+  p{margin:6px 0}
+</style>
+</head>
+<body>
+<div>
+  <p style="font-size:22px;font-weight:700">Kültürpark Orman</p>
+  <p>Menü açılıyor…</p>
+  <p style="font-size:14px;opacity:.8">Açılmazsa <a id="lnk" href="https://aybuketuna.github.io/qr-menu/">buraya dokunun</a>.</p>
+</div>
+<script>
+// config.json okunamazsa kullanılacak yedek adres
+const FALLBACK = "https://aybuketuna.github.io/qr-menu/";
+
+function pick(cfg) {
+  // Bugünün tarihi (Türkiye saati), YYYY-AA-GG biçiminde
+  const today = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Istanbul" });
+  for (const r of (cfg.rules || [])) {
+    if (r && r.target && r.from <= today && today <= r.to) return r.target;
+  }
+  return cfg.target;
+}
+
+(async () => {
+  let target = FALLBACK;
+  try {
+    const res = await fetch("config.json?v=" + Date.now(), { cache: "no-store" });
+    const cfg = await res.json();
+    target = pick(cfg) || FALLBACK;
+  } catch (e) { /* yedek adres kullanılır */ }
+  document.getElementById("lnk").href = target;
+  location.replace(target);
+})();
+</script>
+</body>
+</html>
